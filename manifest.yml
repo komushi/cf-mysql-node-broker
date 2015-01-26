@@ -1,0 +1,6 @@
+---
+applications:
+- name: cf-mysql-node-broker
+memory: 256M
+instances: 1
+host: cf-mysql-node-broker
