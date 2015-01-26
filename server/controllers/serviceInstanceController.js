@@ -1,22 +1,28 @@
 var service = require('../services/serviceInstanceService.js');
  
-exports.getMySQL = function(req, res) {
-    service.executeQuery("select 1 + 1 as result", function (err, result) {
+
+
+exports.update = function(req, res) {
+    console.log("req.params.instance_id:");
+    console.log(req.params.instance_id);
+    service.create(req.params.instance_id, function (err, result) {
 
     	console.log("result:" + JSON.stringify(result));
     	res.set('Content-Type', 'application/json');
-    	res.send(result);
+    	res.send("{}");
     });
 
 };
 
+exports.destroy = function(req, res) {
+    console.log("req.params.instance_id:");
+    console.log(req.params.instance_id);
 
-exports.create = function(req, res) {
-    service.update(req.params.id, function (err, result) {
+    service.delete(req.params.instance_id, function (err, result) {
 
-    	console.log("result:" + JSON.stringify(result));
-    	res.set('Content-Type', 'application/json');
-    	res.send(result);
+        console.log("result:" + JSON.stringify(result));
+        res.set('Content-Type', 'application/json');
+        res.send("{}");
     });
 
 };

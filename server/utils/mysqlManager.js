@@ -107,11 +107,6 @@ exports.executeQuery = function(queryText, next){
 		    		error = err;
 		    	}
 
-
-
-				console.log(queryText);
-				console.log(rows);
-
 				result = rows;
 
 				return next(error, result);
