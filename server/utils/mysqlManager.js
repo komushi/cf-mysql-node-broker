@@ -29,8 +29,10 @@ var createPool  = function ()
     	}
     	else
     	{
-    		console.log(err);
-    		d.reject(new Error(err));
+    		// console.log("err");
+    		// console.log(err);
+    		// d.reject(new Error(err));
+    		d.reject(err);
     	}
 
     });
@@ -51,8 +53,10 @@ var getConnection  = function (pool)
     	}
     	else
     	{
-    		console.log(err);
-    		d.reject(new Error(err));
+    		// console.log("getConnection err");
+    		// console.log(err);
+    		// d.reject(new Error(err));
+    		d.reject(err);
     	}
 
 	});
@@ -77,8 +81,10 @@ var doQuery  = function (connection, queryText)
     	}
     	else
     	{
-    		console.log(err);
-    		d.reject(new Error(err));
+    		// console.log("doQuery err");
+    		// console.log(err);
+    		// d.reject(new Error(err));
+    		d.reject(err);
     	}
 	});
 
@@ -107,6 +113,12 @@ exports.executeQuery = function(queryText){
 		.then(function(result) {
 			// console.log("executeQuery result: " + JSON.stringify(result));
 			d.resolve(result);
+		})
+		.catch(function(error){
+    		// console.log("error!!");
+    		// console.error(error);
+    		// d.reject(new Error(error));
+    		d.reject(error);
 		});
 
 	return d.promise;

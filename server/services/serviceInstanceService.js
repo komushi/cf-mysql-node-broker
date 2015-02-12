@@ -17,6 +17,12 @@ var schemaExists = function (instanceId) {
 	mysqlManager.executeQuery(queryText)
 		.then(function(result){
 			d.resolve(result.length > 0);
+		})
+		.catch(function(error){
+    		// console.log("schemaExists error!!");
+    		// console.log(error);
+    		// d.reject(new Error(error));
+    		d.reject(error);
 		});
 
 	return d.promise;
@@ -46,6 +52,12 @@ exports.create = function(instanceId, next) {
 				d.resolve(201);
 			}
 
+		})
+		.catch(function(error){
+    		// console.log("create error!!");
+    		// console.log(error);
+    		// d.reject(new Error(error));
+    		d.reject(error);
 		});
 
 	return d.promise;
@@ -74,24 +86,16 @@ exports.delete = function(instanceId) {
 				d.resolve(410);
 			}
 
+		})
+		.catch(function(error){
+    		// console.log("delete error!!");
+    		// console.log(error);
+    		// d.reject(new Error(error));
+    		d.reject(error);
 		});
 
 	return d.promise;
 
 
-
-	// var d = Q.defer();
-
-
-	// var queryText = "DROP SCHEMA IF EXISTS " + instanceId ;
-
-	// console.log("queryText: " + queryText);
-
-	// mysqlManager.executeQuery(queryText)
-	// 	.then(function (result) {
-	// 		d.resolve(200);
-	// 	});
-
-	// return d.promise;
 
 };

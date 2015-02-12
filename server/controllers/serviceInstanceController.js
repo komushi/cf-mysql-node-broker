@@ -11,7 +11,13 @@ exports.update = function(req, res) {
             res.status(result);
             res.send("{}");
         })
-        .catch(console.error)
+        .catch(function(error){
+            console.log("controller error:");
+            console.log(error.stack);
+            res.set('Content-Type', 'application/json');
+            res.status(403);
+            res.send(JSON.stringify(error));
+        })
         .done();
 };
 
@@ -25,6 +31,12 @@ exports.destroy = function(req, res) {
             res.status(result);
             res.send("{}");
         })
-        .catch(console.error)
+        .catch(function(error){
+            console.log("controller error:");
+            console.log(error.stack);
+            res.set('Content-Type', 'application/json');
+            res.status(403);
+            res.send(JSON.stringify(error));
+        })
         .done();
 };
