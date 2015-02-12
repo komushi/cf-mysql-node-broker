@@ -4,16 +4,18 @@
  */
 
 
-var mysql = require('mysql');
+var Q = require("q");
+var mysql = require("mysql");
 var resourceManager = require('../utils/resourceManager.js');
 
-
-var createPool  = function (next)
+var createPool  = function ()
 {
+	var d = Q.defer();
+
     resourceManager.getResource("./resources/mysql.yml", function (err, jsonString) {
 
     	var mysqlPool;
-    	var error = null;
+    	
     	if (!err && jsonString)
     	{
     		var jsonObj = JSON.parse(jsonString);
@@ -23,40 +25,64 @@ var createPool  = function (next)
 			  user     : jsonObj.user,
 			  password : jsonObj.password
 			});
+			d.resolve(mysqlPool);
     	}
     	else
     	{
     		console.log(err);
-    		error = err;
+    		d.reject(new Error(err));
     	}
-    	
-    	return next(error, mysqlPool);
 
     });
 
+    return d.promise;
+
 };
 
-var getConnection  = function (pool, next)
+var getConnection  = function (pool)
 {
+	var d = Q.defer();
 
 	pool.getConnection(function (err, connection) {
 
-		var mysqlConn;
-		var error = null;
-
     	if (!err && connection)
     	{
-    		mysqlConn = connection;
+    		d.resolve(connection);
     	}
     	else
     	{
     		console.log(err);
-    		error = err;
+    		d.reject(new Error(err));
     	}
 
-    	return next(error, mysqlConn);
-
 	});
+
+	return d.promise;
+
+};
+
+var doQuery  = function (connection, queryText)
+{
+	var d = Q.defer();
+
+	// Use the connection
+	connection.query(queryText, function(err, rows) {
+
+		// And done with the connection.
+		connection.release();
+
+    	if (!err && rows)
+    	{
+    		d.resolve(rows);
+    	}
+    	else
+    	{
+    		console.log(err);
+    		d.reject(new Error(err));
+    	}
+	});
+
+	return d.promise;
 
 };
 
@@ -69,52 +95,20 @@ var getConnection  = function (pool, next)
  * @param   {string}   queryText
  * @returns {function} 
  */
-exports.executeQuery = function(queryText, next){
+exports.executeQuery = function(queryText){
 
-	
-	createPool(function (err, pool) {
+	var d = Q.defer();
 
-    	if (err)
-    	{
-    		return next(err, null);
-    	}
-
-		getConnection(pool, function(err, connection) {
-
-	    	if (err)
-	    	{
-	    		return next(err, null);
-	    	}
-
-
-
-			// Use the connection
-			connection.query(queryText, function(err, rows) {
-
-				var error = null;
-				var result;
-
-				// And done with the connection.
-				connection.release();
-
-		    	if (!err && rows)
-		    	{
-		    		result = rows;
-		    	}
-		    	else
-		    	{
-		    		console.log(err);
-		    		error = err;
-		    	}
-
-				result = rows;
-
-				return next(error, result);
-			});
+	createPool()
+		.then(getConnection)
+		.then(function(connection) {
+			return doQuery(connection, queryText);
+		})
+		.then(function(result) {
+			// console.log("executeQuery result: " + JSON.stringify(result));
+			d.resolve(result);
 		});
-    	
 
-	});
-
+	return d.promise;
 	
 };

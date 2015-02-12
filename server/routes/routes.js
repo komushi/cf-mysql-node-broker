@@ -53,14 +53,14 @@ router.route('/v2/service_instances/:instance_id')
 /* REST API /v2/service_instances/:instance_id/service_bindings/:binding_id */
 router.route('/v2/service_instances/:instance_id/service_bindings/:binding_id')
   .put(function (req, res) {
-    console.log("Begin: put /v2/service_instances/:instance_id");
+    console.log("Begin: put /v2/service_instances/:instance_id/service_bindings/:binding_id");
 
     serviceInstanceController.update(req, res);
 
-    console.log("End: put /v2/service_instances/:instance_id");
+    console.log("End: put /v2/service_instances/:instance_id/service_bindings/:binding_id");
 })
   .delete(function (req, res) {
-    console.log("Begin: delete /v2/service_instances/:instance_id");
+    console.log("Begin: delete /v2/service_instances/:instance_id/service_bindings/:binding_id");
 
     serviceInstanceController.destroy(req, res);
 
