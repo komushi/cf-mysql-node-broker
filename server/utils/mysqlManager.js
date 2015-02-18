@@ -6,36 +6,53 @@
 
 var Q = require("q");
 var mysql = require("mysql");
-var resourceManager = require('../utils/resourceManager.js');
+var resourceManager = require('../utils/resourceManager');
+
+// var createPool  = function ()
+// {
+// 	var d = Q.defer();
+
+//     resourceManager.getResource("./resources/mysql.yml", function (err, jsonString) {
+
+//     	var mysqlPool;
+    	
+//     	if (!err && jsonString)
+//     	{
+//     		var jsonObj = JSON.parse(jsonString);
+// 	    	mysqlPool = mysql.createPool({
+// 			  host     : jsonObj.host,
+// 			  port     : jsonObj.port,
+// 			  user     : jsonObj.user,
+// 			  password : jsonObj.password
+// 			});
+// 			d.resolve(mysqlPool);
+//     	}
+//     	else
+//     	{
+//     		// console.log("err");
+//     		// console.log(err);
+//     		// d.reject(new Error(err));
+//     		d.reject(err);
+//     	}
+
+//     });
+
+//     return d.promise;
+
+// };
 
 var createPool  = function ()
 {
-	var d = Q.defer();
+    var d = Q.defer();
 
-    resourceManager.getResource("./resources/mysql.yml", function (err, jsonString) {
-
-    	var mysqlPool;
-    	
-    	if (!err && jsonString)
-    	{
-    		var jsonObj = JSON.parse(jsonString);
-	    	mysqlPool = mysql.createPool({
-			  host     : jsonObj.host,
-			  port     : jsonObj.port,
-			  user     : jsonObj.user,
-			  password : jsonObj.password
-			});
-			d.resolve(mysqlPool);
-    	}
-    	else
-    	{
-    		// console.log("err");
-    		// console.log(err);
-    		// d.reject(new Error(err));
-    		d.reject(err);
-    	}
-
+    mysqlPool = mysql.createPool({
+      host     : process.env.host,
+      port     : process.env.port,
+      user     : process.env.user,
+      password : process.env.password
     });
+    
+    d.resolve(mysqlPool);
 
     return d.promise;
 

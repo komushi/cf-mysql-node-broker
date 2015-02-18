@@ -1,5 +1,5 @@
 var Q = require('q');
-var service = require('../services/serviceInstanceService');
+var service = require('../services/serviceBindingService');
 
 exports.update = function(req, res) {
     console.log("req.params.instance_id:" + req.params.instance_id);

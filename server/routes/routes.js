@@ -1,6 +1,7 @@
 var express=require('express');
 var catalogController = require('../controllers/catalogController');
 var serviceInstanceController = require('../controllers/serviceInstanceController');
+var serviceBindingController = require('../controllers/serviceBindingController');
 
 //configure routes
 var router = express.Router();
@@ -55,14 +56,14 @@ router.route('/v2/service_instances/:instance_id/service_bindings/:binding_id')
   .put(function (req, res) {
     console.log("Begin: put /v2/service_instances/:instance_id/service_bindings/:binding_id");
 
-    serviceInstanceController.update(req, res);
+    serviceBindingController.update(req, res);
 
     console.log("End: put /v2/service_instances/:instance_id/service_bindings/:binding_id");
 })
   .delete(function (req, res) {
     console.log("Begin: delete /v2/service_instances/:instance_id/service_bindings/:binding_id");
 
-    serviceInstanceController.destroy(req, res);
+    serviceBindingController.destroy(req, res);
 
     console.log("End: delete /v2/service_instances/:instance_id/service_bindings/:binding_id");
 });

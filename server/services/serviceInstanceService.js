@@ -7,7 +7,7 @@ var mysqlManager = require('../utils/mysqlManager');
  * @param  {Function} next       callback function
  * @return {[type]}              callback function
  */
-var schemaExists = function (instanceId) {
+var schemaExists = function (instanceId, expectExists) {
 
 	var d = Q.defer();
 
@@ -16,12 +16,73 @@ var schemaExists = function (instanceId) {
 
 	mysqlManager.executeQuery(queryText)
 		.then(function(result){
-			d.resolve(result.length > 0);
+			if (expectExists)
+			{
+				if (result.length != 0)
+				{
+					d.resolve(instanceId);
+				}
+				else
+				{
+					d.reject(new Error("Schema does not exist!"));
+				}
+			}
+			else
+			{
+				if (result.length == 0)
+				{
+					d.resolve(instanceId);
+				}
+				else
+				{
+					d.reject(new Error("Schema already exists!"));
+				}
+			}
 		})
 		.catch(function(error){
-    		// console.log("schemaExists error!!");
-    		// console.log(error);
-    		// d.reject(new Error(error));
+    		d.reject(error);
+		});
+
+	return d.promise;
+
+};
+
+var createSchema = function (instanceId) {
+
+	var d = Q.defer();
+
+	// var queryText = "CREATE SCHEMA " + instanceId + " CHARACTER SET utf8 COLLATE utf8_bin";
+	var queryText = "CREATE SCHEMA " + instanceId;
+
+	console.log("queryText: " + queryText);
+
+	mysqlManager.executeQuery(queryText)
+		.then(function (result) {
+			console.log(result);
+			d.resolve();
+		})
+		.catch(function(error){
+			console.error(error);
+    		d.reject(error);
+		});
+
+	return d.promise;
+
+};
+
+var dropSchema = function (instanceId) {
+
+	var d = Q.defer();
+
+	var queryText = "DROP SCHEMA IF EXISTS " + instanceId ;
+
+	console.log("queryText: " + queryText);
+
+	mysqlManager.executeQuery(queryText)
+		.then(function (result) {
+			d.resolve();
+		})
+		.catch(function(error){
     		d.reject(error);
 		});
 
@@ -34,29 +95,12 @@ exports.create = function(instanceId, next) {
 
 	var d = Q.defer();
 
-	schemaExists(instanceId)
-		.then(function (exists){
-			if (!exists){
-				var queryText = "CREATE SCHEMA " + instanceId;
-
-				console.log("queryText: " + queryText);
-
-				mysqlManager.executeQuery(queryText)
-					.then(function (result) {
-
-						d.resolve(200);
-					});
-			}
-			else
-			{
-				d.resolve(201);
-			}
-
+	schemaExists(instanceId, false)
+		.then(createSchema)
+		.then(function(result){
+			d.resolve(result);
 		})
 		.catch(function(error){
-    		// console.log("create error!!");
-    		// console.log(error);
-    		// d.reject(new Error(error));
     		d.reject(error);
 		});
 
@@ -65,37 +109,16 @@ exports.create = function(instanceId, next) {
 
 exports.delete = function(instanceId) {
 
-
 	var d = Q.defer();
 
-	schemaExists(instanceId)
-		.then(function (exists){
-			if (exists){
-				var queryText = "DROP SCHEMA IF EXISTS " + instanceId ;
-
-				console.log("queryText: " + queryText);
-
-				mysqlManager.executeQuery(queryText)
-					.then(function (result) {
-
-						d.resolve(200);
-					});
-			}
-			else
-			{
-				d.resolve(410);
-			}
-
+	schemaExists(instanceId, true)
+		.then(dropSchema)
+		.then(function(result){
+			d.resolve(result);
 		})
 		.catch(function(error){
-    		// console.log("delete error!!");
-    		// console.log(error);
-    		// d.reject(new Error(error));
     		d.reject(error);
 		});
 
 	return d.promise;
-
-
-
 };

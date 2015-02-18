@@ -1,4 +1,8 @@
 console.log("process.cwd():" + process.cwd());
+process.env['host'] = "localhost";
+process.env['port'] = "3306";
+process.env['user'] = "root";
+process.env['password'] = "";
 
 /**************************/
 /* config */
@@ -7,7 +11,6 @@ var express = require("express");
 var path = require("path");
 var Q = require("q");
 var bodyParser = require('body-parser');
-// var api = require('./controllers/catalogController');
 var routes = require('./routes/routes');
 var basicAuth = require('./utils/basicAuth');
 var app = express();
@@ -38,7 +41,6 @@ app.use('/', routes);
 
 /* config */
 /**************************/
-
 var server = app.listen((process.env.PORT || 9000), function() {
   console.log('Express server listening on port ' + server.address().port);
 });
