@@ -32,7 +32,7 @@ var bindExists = function (binding) {
 
 	var d = Q.defer();
 
-	var queryText = "SELECT 'db', User FROM mysql.db WHERE db='" + instanceId + "' and User='" + userName + "'";
+	var queryText = "SELECT 'db', User FROM mysql.db WHERE db='" + binding.schema + "' and User='" + binding.username + "'";
 
 	console.log("queryText: " + queryText);
 
@@ -106,7 +106,7 @@ var flushPrivilege = function (binding) {
 	console.log("queryText: " + queryText);
 
 	mysqlManager.executeQuery(queryText)
-		.then(function(binding){
+		.then(function(result){
 			d.resolve(binding);
 		})
 		.catch(function(error){
@@ -138,6 +138,7 @@ var dropUser = function (userName) {
 
 exports.save = function(instanceId, username) {
 
+	var d = Q.defer();
 	var varBinding = {schema: instanceId, username: username};
 
 	bindExists(varBinding)
@@ -145,13 +146,15 @@ exports.save = function(instanceId, username) {
 		.then(grantPrivilege)
 		.then(flushPrivilege)
 		.then(function (binding){
-			var url = "mysq://" + username + ":" + binding.password + "@" + process.env.host + ":" + process.env.port + "/" + instanceId;
+			var url = "mysql://" + username + ":" + binding.password + "@" + process.env.host + ":" + process.env.port + "/" + instanceId;
 			var result = {credentials: url};
 			d.resolve(result);
 		})
 		.catch(function(error){
     		d.reject(error);
 		});
+
+	return d.promise;
 };
 
 
@@ -162,7 +165,7 @@ exports.destroy = function(userName) {
 	userExists(userName)
 		.then(dropUser)
 		.then(function(result){
-			d.resolve(result);
+			d.resolve({});
 		})
 		.catch(function(error){
     		d.reject(error);

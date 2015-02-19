@@ -51,8 +51,7 @@ var createSchema = function (instanceId) {
 
 	var d = Q.defer();
 
-	// var queryText = "CREATE SCHEMA " + instanceId + " CHARACTER SET utf8 COLLATE utf8_bin";
-	var queryText = "CREATE SCHEMA " + instanceId;
+	var queryText = "CREATE SCHEMA " + instanceId + " CHARACTER SET utf8 COLLATE utf8_bin";
 
 	console.log("queryText: " + queryText);
 
@@ -91,14 +90,14 @@ var dropSchema = function (instanceId) {
 };
 
 
-exports.create = function(instanceId, next) {
+exports.create = function(instanceId) {
 
 	var d = Q.defer();
 
 	schemaExists(instanceId, false)
 		.then(createSchema)
 		.then(function(result){
-			d.resolve(result);
+			d.resolve({});
 		})
 		.catch(function(error){
     		d.reject(error);
@@ -114,7 +113,7 @@ exports.delete = function(instanceId) {
 	schemaExists(instanceId, true)
 		.then(dropSchema)
 		.then(function(result){
-			d.resolve(result);
+			d.resolve({});
 		})
 		.catch(function(error){
     		d.reject(error);

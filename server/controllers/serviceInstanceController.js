@@ -1,7 +1,7 @@
 var Q = require('q');
 var service = require('../services/serviceInstanceService');
 
-exports.update = function(req, res) {
+exports.create = function(req, res) {
     console.log("req.params.instance_id:" + req.params.instance_id);
 
     service.create(req.params.instance_id)
@@ -21,7 +21,7 @@ exports.update = function(req, res) {
         .done();
 };
 
-exports.destroy = function(req, res) {
+exports.delete = function(req, res) {
     console.log("req.params.instance_id:" + req.params.instance_id);
 
     service.delete(req.params.instance_id)

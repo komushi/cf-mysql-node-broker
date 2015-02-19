@@ -36,14 +36,14 @@ router.route('/v2/service_instances/:instance_id')
   .put(function (req, res) {
   	console.log("Begin: put /v2/service_instances/:instance_id");
 
-  	serviceInstanceController.update(req, res);
+  	serviceInstanceController.create(req, res);
 
   	console.log("End: put /v2/service_instances/:instance_id");
 })
   .delete(function (req, res) {
     console.log("Begin: delete /v2/service_instances/:instance_id");
 
-    serviceInstanceController.destroy(req, res);
+    serviceInstanceController.delete(req, res);
 
     console.log("End: delete /v2/service_instances/:instance_id");
 });
@@ -56,7 +56,7 @@ router.route('/v2/service_instances/:instance_id/service_bindings/:binding_id')
   .put(function (req, res) {
     console.log("Begin: put /v2/service_instances/:instance_id/service_bindings/:binding_id");
 
-    serviceBindingController.update(req, res);
+    serviceBindingController.save(req, res);
 
     console.log("End: put /v2/service_instances/:instance_id/service_bindings/:binding_id");
 })
