@@ -51,7 +51,7 @@ var createSchema = function (instanceId) {
 
 	var d = Q.defer();
 
-	var queryText = "CREATE SCHEMA " + instanceId + " CHARACTER SET utf8 COLLATE utf8_bin";
+	var queryText = "CREATE SCHEMA `" + instanceId + "` CHARACTER SET utf8 COLLATE utf8_bin";
 
 	console.log("queryText: " + queryText);
 
@@ -73,7 +73,7 @@ var dropSchema = function (instanceId) {
 
 	var d = Q.defer();
 
-	var queryText = "DROP SCHEMA IF EXISTS " + instanceId ;
+	var queryText = "DROP SCHEMA IF EXISTS `" + instanceId  + "`";
 
 	console.log("queryText: " + queryText);
 

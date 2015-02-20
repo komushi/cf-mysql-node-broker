@@ -1,4 +1,3 @@
-console.log("process.cwd():" + process.cwd());
 process.env['host'] = "localhost";
 process.env['port'] = "3306";
 process.env['user'] = "root";
@@ -41,6 +40,8 @@ app.use('/', routes);
 
 /* config */
 /**************************/
+
+
 var server = app.listen((process.env.PORT || 9000), function() {
   console.log('Express server listening on port ' + server.address().port);
 });

@@ -1,11 +1,14 @@
 var Q = require('q');
 var service = require('../services/serviceBindingService');
+var credentialsManager = require('../utils/bindingManager');
 
 exports.save = function(req, res) {
     console.log("req.params.instance_id:" + req.params.instance_id);
     console.log("req.params.binding_id:" + req.params.binding_id);
 
-    service.save(req.params.instance_id, req.params.binding_id)
+    var binding = credentialsManager.generateBinding(req.params.instance_id, req.params.binding_id);
+
+    service.save(binding)
         .then(function(result){
             console.log('result:' + JSON.stringify(result));
             res.set('Content-Type', 'application/json');
@@ -23,9 +26,12 @@ exports.save = function(req, res) {
 };
 
 exports.destroy = function(req, res) {
+    console.log("req.params.instance_id:" + req.params.instance_id);
     console.log("req.params.binding_id:" + req.params.binding_id);
 
-    service.destroy(req.params.binding_id)
+    var binding = credentialsManager.generateBinding(req.params.instance_id, req.params.binding_id);
+
+    service.destroy(binding)
         .then(function(result){
             console.log('result:' + JSON.stringify(result));
             res.set('Content-Type', 'application/json');

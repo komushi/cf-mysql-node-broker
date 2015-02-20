@@ -62,8 +62,6 @@ var createUser = function (binding) {
 
 	var d = Q.defer();
 
-	binding["password"] = "password";
-
 	var queryText = "CREATE USER '" + binding.username + "' IDENTIFIED BY '" + binding.password + "'" ;
 	console.log("queryText: " + queryText);
 
@@ -136,19 +134,39 @@ var dropUser = function (userName) {
 
 };
 
-exports.save = function(instanceId, username) {
+var createCredentials = function (binding) {
+
+	var credentials;
+
+	var uri = "mysql://" + binding.username + ":" + binding.password + "@" + process.env.host + ":" + process.env.port + "/" + binding.schema;
+
+	credentials = 
+		{
+			credentials : 
+				{
+					uri: uri,
+					username: binding.username,
+					password: binding.password,
+					host: process.env.host,
+					port: process.env.port,
+					database: binding.schema
+				}
+		};
+
+	return credentials
+
+};
+
+exports.save = function(binding) {
 
 	var d = Q.defer();
-	var varBinding = {schema: instanceId, username: username};
 
-	bindExists(varBinding)
+	bindExists(binding)
 		.then(createUser)
 		.then(grantPrivilege)
 		.then(flushPrivilege)
-		.then(function (binding){
-			var url = "mysql://" + username + ":" + binding.password + "@" + process.env.host + ":" + process.env.port + "/" + instanceId;
-			var result = {credentials: url};
-			d.resolve(result);
+		.then(function (resultBinding){
+			d.resolve(createCredentials(resultBinding));
 		})
 		.catch(function(error){
     		d.reject(error);
@@ -158,11 +176,11 @@ exports.save = function(instanceId, username) {
 };
 
 
-exports.destroy = function(userName) {
+exports.destroy = function(binding) {
 
 	var d = Q.defer();
 
-	userExists(userName)
+	userExists(binding.username)
 		.then(dropUser)
 		.then(function(result){
 			d.resolve({});
