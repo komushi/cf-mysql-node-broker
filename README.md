@@ -1,4 +1,4 @@
-A Node.js version of MySQL Service Broker for Cloud Foundry!
+A Node.js version of MySQL Service Broker for Cloud Foundry
 ===================
 
 Overview
