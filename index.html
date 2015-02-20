@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cf-mysql-node-broker by komushi</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Cf-mysql-node-broker</h1>
+        <p>A Node.js version of MySQL Service Broker for Cloud Foundry</p>
+        <p class="view"><a href="https://github.com/komushi/cf-mysql-node-broker">View the Project on GitHub <small>komushi/cf-mysql-node-broker</small></a></p>
+        <ul>
+          <li><a href="https://github.com/komushi/cf-mysql-node-broker/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/komushi/cf-mysql-node-broker/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/komushi/cf-mysql-node-broker">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="a-nodejs-version-of-mysql-service-broker-for-cloud-foundry" class="anchor" href="#a-nodejs-version-of-mysql-service-broker-for-cloud-foundry" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Node.js version of MySQL Service Broker for Cloud Foundry</h1>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>This is a Node.js version of MySQL Service Broker for Cloud Foundry which can be deployed as a Node.js application to Cloud Foundry or anywhere the node.js framework works.</p>
+
+<p>The specification complies with the <a href="http://docs.cloudfoundry.org/services/api.html">Service Broker API v2</a>. Some other official documents of Cloud Foundry - <a href="http://docs.cloudfoundry.org/services/managing-service-brokers.html#make-plans-public">Managing Service Brokers</a> &amp; <a href="http://docs.cloudfoundry.org/services/access-control.html">Access Control</a> - were also be referenced.</p>
+
+<p>Appreciate the original Java example which can be found <a href="https://github.com/cloudfoundry-community/cf-mysql-java-broker">here</a>.</p>
+
+<hr>
+
+<h2>
+<a id="why-creating-an-example-with-nodejs-for-a-mysql-service-broker" class="anchor" href="#why-creating-an-example-with-nodejs-for-a-mysql-service-broker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why creating an example with Node.js for a MySQL Service Broker?</h2>
+
+<ol>
+<li>Already a lot of Service Broker examples in Java and Ruby - some people might be looking for something different. Hope this one can be used as a template for beginners like myself.</li>
+<li>MySQL Community Edition can be easily found and installed on Windows, Mac OS X or Linux and monitored with a good GUI admin tool called MySQL Workbench - easy for local environment test.</li>
+<li>Trust Microservices in Node.js fits this kind of task better.</li>
+<li>I am a database engineer without too much javascript experience and happen to notice that Node.js is so powerful and make applications and services easy to compose.</li>
+</ol>
+
+<hr>
+
+<h2>
+<a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>Architecture</h2>
+
+<h3>
+<a id="cloud-foundry-service-broker-api-v2" class="anchor" href="#cloud-foundry-service-broker-api-v2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cloud Foundry Service Broker API v2</h3>
+
+<p>The broker can be deployed to any place where both sides - Cloud Foundry and MySQL Server - can be reached.
+<img src="http://docs.cloudfoundry.org/services/images/v2services-new.png" alt="3-tier"></p>
+
+<hr>
+
+<h2>
+<a id="local-environment-test" class="anchor" href="#local-environment-test" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local Environment Test</h2>
+
+<p>Starting with a local MySQL server. Go to <a href="http://dev.mysql.com/downloads/mysql/">http://dev.mysql.com/downloads/mysql/</a> and download and install the proper release for your OS. </p>
+
+<p>I also prefer to use <a href="http://dev.mysql.com/downloads/workbench/">MySQL Workbench</a> for GUI management but it is optional.</p>
+
+<p>Clone this repository.</p>
+
+<pre><code>git clone https://github.com/komushi/cf-mysql-node-broker
+cd cf-mysql-node-broker
+</code></pre>
+
+<p>Open cf-mysql-node-broker/server/app.js and <strong>uncomment</strong> the following lines. Hope they match your <strong>default</strong> settings.</p>
+
+<pre><code>// process.env['host'] = "localhost";
+// process.env['port'] = "3306";
+// process.env['user'] = "root";
+// process.env['password'] = "";
+</code></pre>
+
+<p>Remeber to install <a href="http://nodejs.org/">node.js and npm</a> first. Then, install the dependencies:</p>
+
+<pre><code>npm install
+</code></pre>
+
+<p>Then, run the Application:</p>
+
+<pre><code>npm start
+</code></pre>
+
+<p>You should be able access your app at with test/test as credentials. I just decided to use the basic authentication to make the code simple.</p>
+
+<pre><code>http://localhost:9000/v2/
+</code></pre>
+
+<p>Let's test the Microservices now.</p>
+
+<pre><code>curl -i -X GET http://test:test@localhost:9000/v2/catalog
+</code></pre>
+
+<blockquote>
+<p>HTTP/1.1 200 OK
+X-Powered-By: Express
+access-control-allow-origin: *
+access-control-allow-methods: GET,PUT,POST,DELETE,OPTIONS
+access-control-allow-headers: Content-Type, Authorization, Content-Length, X-Requested-With
+content-type: application/json
+content-length: 85107
+Date: Fri, 20 Feb 2015 09:40:55 GMT
+Connection: keep-alive</p>
+
+<p>{"services":[{"name":"mac-mysql","id":"3101b971-1044-4816-a7ac-9ded2e028079","description":"MySQL service for application development and testing","bindable":true,"tags":["mysql","relational"],"max_db_per_node":250,"metadata":{"displayName":"MySQL On Mac".....</p>
+</blockquote>
+
+<pre><code>curl -i -X PUT http://test:test@localhost:9000/v2/service_instances/myinstance
+</code></pre>
+
+<blockquote>
+<p>HTTP/1.1 200 OK X-Powered-By: Express access-control-allow-origin: *
+access-control-allow-methods: GET,PUT,POST,DELETE,OPTIONS
+access-control-allow-headers: Content-Type, Authorization,
+Content-Length, X-Requested-With content-type: application/json
+content-length: 2 Date: Fri, 20 Feb 2015 09:47:14 GMT Connection:
+keep-alive</p>
+
+<p>{}</p>
+</blockquote>
+
+<p>Check your MySQL server, now you should have a MySQL schema called <strong>myinstance</strong>.</p>
+
+<pre><code>curl -i http://test:test@localhost:9000/v2/service_instances/myinstance/service_bindings/mybindingid -d '{
+"plan_id": "plan-guid-here",
+"service_id": "service-guid-here",
+"app_guid": "app-guid-here"
+}' -X PUT
+</code></pre>
+
+<blockquote>
+<p>HTTP/1.1 200 OK X-Powered-By: Express access-control-allow-origin: *
+access-control-allow-methods: GET,PUT,POST,DELETE,OPTIONS
+access-control-allow-headers: Content-Type, Authorization,
+Content-Length, X-Requested-With content-type: application/json
+content-length: 210 Date: Fri, 20 Feb 2015 09:49:55 GMT Connection:
+keep-alive</p>
+
+<p>{"credentials":{"uri":"mysql://0fd7c4b7475c3cbd:d235440f6be97030@localhost:3306/myinstance","username":"0fd7c4b7475c3cbd","password":"d235440f6be97030","host":"localhost","port":"3306","database":"myinstance"}}</p>
+</blockquote>
+
+<p>Check your MySQL server, now you should have a user which has privileges of the schema <strong>myinstance</strong>. Remember the user name is generated by the binding id named <strong>mybindingid</strong>.</p>
+
+<pre><code>curl -i 'http://test:test@localhost:9000/v2/service_instances/myinstance/service_bindings/mybindingid?service_id=service-id-here&amp;plan_id=plan-id-here' -X DELETE
+</code></pre>
+
+<blockquote>
+<p>HTTP/1.1 200 OK X-Powered-By: Express access-control-allow-origin: *
+access-control-allow-methods: GET,PUT,POST,DELETE,OPTIONS
+access-control-allow-headers: Content-Type, Authorization,
+Content-Length, X-Requested-With content-type: application/json
+content-length: 2 Date: Fri, 20 Feb 2015 09:55:49 GMT Connection:
+keep-alive</p>
+
+<p>{}</p>
+</blockquote>
+
+<p>Check your MySQL server, the user is gone.</p>
+
+<pre><code>curl -i -X DELETE http://test:test@localhost:9000/v2/service_instances/myinstance
+</code></pre>
+
+<blockquote>
+<p>HTTP/1.1 200 OK X-Powered-By: Express access-control-allow-origin: *
+access-control-allow-methods: GET,PUT,POST,DELETE,OPTIONS
+access-control-allow-headers: Content-Type, Authorization,
+Content-Length, X-Requested-With content-type: application/json
+content-length: 2 Date: Fri, 20 Feb 2015 09:58:57 GMT Connection:
+keep-alive</p>
+
+<p>{}</p>
+</blockquote>
+
+<p>This time the schema <strong>myinstance</strong> is also gone.</p>
+
+<hr>
+
+<h2>
+<a id="deployment-to-cloud-foundry" class="anchor" href="#deployment-to-cloud-foundry" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment to Cloud Foundry</h2>
+
+<p>If you are confident enough about this example you can skip the local test and deploy it to a web server which supports Node.js.</p>
+
+<p>Clone this repository,</p>
+
+<pre><code>git clone https://github.com/komushi/cf-mysql-node-broker
+cd cf-mysql-node-broker
+</code></pre>
+
+<p>Remember to install <a href="https://github.com/cloudfoundry/cli/releases">cf cli</a> first. Then, push the application:</p>
+
+<pre><code>cf push
+</code></pre>
+
+<p>You can access your app at test/test as credentials.</p>
+
+<pre><code>http://cf-mysql-node-broker.&lt;your-cf-app-domain&gt;/v2
+</code></pre>
+
+<p>Create Service Broker with admin access.</p>
+
+<pre><code>cf create-service-broker mysqlbroker test test http://cf-mysql-node-broker.&lt;your-cf-app-domain&gt;
+</code></pre>
+
+<p>Make the service available to all the organizations.</p>
+
+<pre><code>cf enable-service-access mac-mysql
+</code></pre>
+
+<p>Set MySQL credentials as environment variables to the broker application.</p>
+
+<pre><code>cf set-env cf-mysql-node-broker host yourmysqlhost
+cf set-env cf-mysql-node-broker port yourmysqlport
+cf set-env cf-mysql-node-broker user 3306
+cf set-env cf-mysql-node-broker password rootpassword
+</code></pre>
+
+<p>Restart the broker application to enable those environment variables.</p>
+
+<pre><code>cf restart cf-mysql-node-broker
+</code></pre>
+
+<p>You are now able to create MySQL schema and bind users to your applications.</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/komushi">komushi</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
