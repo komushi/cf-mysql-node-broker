@@ -1,7 +1,7 @@
-process.env['host'] = "localhost";
-process.env['port'] = "3306";
-process.env['user'] = "root";
-process.env['password'] = "";
+// process.env['host'] = "localhost";
+// process.env['port'] = "3306";
+// process.env['user'] = "root";
+// process.env['password'] = "";
 
 /**************************/
 /* config */

@@ -27,7 +27,7 @@ router.route('/v2/catalog')
   	console.log("End: /v2/catalog");
 });
 
-/* REST API getCountByCat */
+/* REST API /v2/catalog */
 /**************************/
 
 /**************************/
