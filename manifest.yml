@@ -5,7 +5,7 @@ applications:
   instances: 1
   host: cf-mysql-node-broker
   env:
-    host: # MySQL Server Host
-    port: # MySQL Server Port
-    user: # root privilege user
-    password: # password
+    host: <MySQL Server Host>
+    port: <MySQL Server Port>
+    user: <root privilege user>
+    password: <password>
