@@ -24,7 +24,10 @@ var schemaExists = function (instanceId, expectExists) {
 				}
 				else
 				{
-					d.reject(new Error("Schema does not exist!"));
+					var error = new Error();
+					error.message = JSON.stringify({description: "MySQL Schema does not exist!"})
+					error.http_code = 410;
+					d.reject(error);
 				}
 			}
 			else
@@ -35,7 +38,10 @@ var schemaExists = function (instanceId, expectExists) {
 				}
 				else
 				{
-					d.reject(new Error("Schema already exists!"));
+					var error = new Error();
+					error.message = JSON.stringify({description: "MySQL Schema already exists!"})
+					error.http_code = 409;
+					d.reject(error);
 				}
 			}
 		})
@@ -100,7 +106,17 @@ exports.create = function(instanceId) {
 			d.resolve({});
 		})
 		.catch(function(error){
-    		d.reject(error);
+			if (error.http_code) 
+			{
+				d.reject(error);
+			}
+			else
+			{
+				var err = new Error();
+				err.message = JSON.stringify({description: error.message});
+				err.http_code = 500;
+				d.reject(err);
+			}
 		});
 
 	return d.promise;
@@ -116,7 +132,20 @@ exports.delete = function(instanceId) {
 			d.resolve({});
 		})
 		.catch(function(error){
-    		d.reject(error);
+
+			if (error.http_code) 
+			{
+				d.reject(error);
+			}
+			else
+			{
+				var err = new Error();
+				err.message = JSON.stringify({description: error.message});
+				err.http_code = 500;
+				d.reject(err);
+			}
+
+    		
 		});
 
 	return d.promise;

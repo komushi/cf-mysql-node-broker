@@ -15,8 +15,8 @@ exports.create = function(req, res) {
             console.log("controller error:");
             console.log(error.stack);
             res.set('Content-Type', 'application/json');
-            res.status(409);
-            res.send(JSON.stringify(error));
+            res.status(error.http_code);
+            res.send(error.message);
         })
         .done();
 };
@@ -35,8 +35,8 @@ exports.delete = function(req, res) {
             console.log("controller error:");
             console.log(error.stack);
             res.set('Content-Type', 'application/json');
-            res.status(410);
-            res.send(JSON.stringify(error));
+            res.status(error.http_code);
+            res.send(error.message);
         })
         .done();
 };

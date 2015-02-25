@@ -17,7 +17,10 @@ var userExists = function (userName) {
 			}
 			else
 			{
-				d.reject(new Error("User does not exist!"));
+				var error = new Error();
+				error.message = JSON.stringify({description: "MySQL User does not exist!"})
+				error.http_code = 410;
+				d.reject(error);
 			}
 		})
 		.catch(function(error){
@@ -45,7 +48,10 @@ var bindExists = function (binding) {
 			}
 			else
 			{
-				d.reject(new Error("Already exists!"));
+				var error = new Error();
+				error.message = JSON.stringify({description: "MySQL User already exists!"})
+				error.http_code = 409;
+				d.reject(error);
 			}
 			
 		})
@@ -169,7 +175,17 @@ exports.save = function(binding) {
 			d.resolve(createCredentials(resultBinding));
 		})
 		.catch(function(error){
-    		d.reject(error);
+			if (error.http_code) 
+			{
+				d.reject(error);
+			}
+			else
+			{
+				var err = new Error();
+				err.message = JSON.stringify({description: error.message});
+				err.http_code = 500;
+				d.reject(err);
+			}
 		});
 
 	return d.promise;
@@ -186,7 +202,17 @@ exports.destroy = function(binding) {
 			d.resolve({});
 		})
 		.catch(function(error){
-    		d.reject(error);
+			if (error.http_code) 
+			{
+				d.reject(error);
+			}
+			else
+			{
+				var err = new Error();
+				err.message = JSON.stringify({description: error.message});
+				err.http_code = 500;
+				d.reject(err);
+			}
 		});
 
 	return d.promise;
